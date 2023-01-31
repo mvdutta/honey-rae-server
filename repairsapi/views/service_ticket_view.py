@@ -3,10 +3,10 @@ from django.http import HttpResponseServerError
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from rest_framework import serializers, status
-from repairsapi.models import ServiceTicket
+from repairsapi.models import ServiceTicket, Customer
 
 
-class TicketView(ViewSet):
+class ServiceTicketView(ViewSet):
     """Honey Rae API service_ticket view"""
 
     def list(self, request):
@@ -34,6 +34,21 @@ class TicketView(ViewSet):
         serialized = ServiceTicketSerializer(service_ticket, context={'request': request})
         return Response(serialized.data, status=status.HTTP_200_OK)
 
+    def create(self, request):
+        """Handle POST requests for service tickets
+
+        Returns:
+            Response: JSON serialized representation of newly created service ticket
+        """
+        new_ticket = ServiceTicket()
+        new_ticket.customer = Customer.objects.get(user=request.auth.user)
+        new_ticket.description = request.data['description']
+        new_ticket.emergency = request.data['emergency']
+        new_ticket.save()
+
+        serialized = ServiceTicketSerializer(new_ticket, many=False)
+
+        return Response(serialized.data, status=status.HTTP_201_CREATED)
 
 class ServiceTicketSerializer(serializers.ModelSerializer):
     """JSON serializer for service_tickets"""
