@@ -67,14 +67,17 @@ class ServiceTicketView(ViewSet):
         #Select the targeted ticket using pk
         ticket = ServiceTicket.objects.get(pk=pk)
 
-        #Get the employee id form the client request
+        # #Get the employee id form the client request
         employee_id = request.data['employee']
 
-        #Select the employee from the database using that id
+        # #Select the employee from the database using that id
         assigned_employee = Employee.objects.get(pk=employee_id)
 
-        #Assign that employee instance to the employee property of the ticket
+        # #Assign that employee instance to the employee property of the ticket
         ticket.employee = assigned_employee
+
+        #To change date_completed: take the date_completed field from request.data and put it into the ticket
+        ticket.date_completed = request.data['date_completed']
 
         #Save the updated ticket
         ticket.save()
