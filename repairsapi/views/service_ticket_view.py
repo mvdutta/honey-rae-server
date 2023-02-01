@@ -24,10 +24,13 @@ class ServiceTicketView(ViewSet):
             if "status" in request.query_params:
                 if request.query_params['status'] == "done":
                     service_tickets = service_tickets.filter(date_completed__isnull=False)
-
+                if request.query_params['status'] == "unclaimed":
+                    service_tickets = service_tickets.filter(employee_id__isnull=True)
+                if request.query_params['status'] == "inprogress":
+                    service_tickets = service_tickets.filter(
+                        employee_id__isnull=False, date_completed__isnull=True)
                 if request.query_params['status'] == "all":
                     pass
-
         else:
             service_tickets = ServiceTicket.objects.filter(customer__user=request.auth.user)
 
