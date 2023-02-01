@@ -7,7 +7,7 @@ from repairsapi.views import register_user, login_user, CustomerView, EmployeeVi
 router = routers.DefaultRouter(trailing_slash=False)
 router.register(r'customers', CustomerView, 'customer')
 router.register(r'employees', EmployeeView, 'employee')
-router.register(r'serviceTickets', ServiceTicketView, 'serviceTicket')
+router.register(r'tickets', ServiceTicketView, 'ticket')
 
 urlpatterns = [
     # Requests to http://localhost:8000/register will be routed to the register_user function
