@@ -16,11 +16,11 @@ class ServiceTicketView(ViewSet):
             Response -- JSON serialized list of tickets
         """
         service_tickets = []
-
+        print(request)
 
         if request.auth.user.is_staff:
             service_tickets = ServiceTicket.objects.all()
-
+            
             if "status" in request.query_params:
                 if request.query_params['status'] == "done":
                     service_tickets = service_tickets.filter(date_completed__isnull=False)
@@ -31,6 +31,13 @@ class ServiceTicketView(ViewSet):
                         employee_id__isnull=False, date_completed__isnull=True)
                 if request.query_params['status'] == "all":
                     pass
+            # All the query params that came in with the request have already been collected and stored in request.query_params. The request is a very large dictionary and query_params is one of its keys, which stores another dictionary where the incoming query parameters are stored as key value pairs. request.query_params accesses that dictionary and here we are checking to see if 'search' is a parameter.
+            if 'search' in request.query_params:
+                searchterm = request.query_params['search']
+                #We now search for the "searchterm" in the description field of the service tickets(is the search term contained anywhere in the description field)
+                service_tickets = service_tickets.filter(description__contains=searchterm)
+
+    
         else:
             service_tickets = ServiceTicket.objects.filter(customer__user=request.auth.user)
 
