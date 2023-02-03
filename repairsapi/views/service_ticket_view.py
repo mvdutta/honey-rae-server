@@ -16,8 +16,7 @@ class ServiceTicketView(ViewSet):
             Response -- JSON serialized list of tickets
         """
         service_tickets = []
-        print(request)
-
+        
         if request.auth.user.is_staff:
             service_tickets = ServiceTicket.objects.all()
             
